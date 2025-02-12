@@ -1,7 +1,10 @@
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Scanner implements Closeable {
     private final BufferedReader in;
@@ -11,6 +14,7 @@ public class Scanner implements Closeable {
     private String curWord = null;
     private Integer curInt = null;
 
+    private int truePos = 0;
     private int pos = 0;
 
     public Scanner(String string) {
@@ -78,6 +82,7 @@ public class Scanner implements Closeable {
         if (!hasNextLine()) {
             throw new NoSuchElementException("EOF reached");
         }
+        truePos = pos;
         String tmp = curLine;
         curLine = null;
         return tmp;
@@ -93,6 +98,7 @@ public class Scanner implements Closeable {
         if (!hasNextWord()) {
             throw new NoSuchElementException("No words were found");
         }
+        truePos = pos;
         String tmp = curWord;
         curWord = null;
         return tmp;
@@ -108,6 +114,7 @@ public class Scanner implements Closeable {
         if (!hasNextInt()) {
             throw new NoSuchElementException("No numbers were found");
         }
+        truePos = pos;
         int tmp = curInt;
         curInt = null;
         return tmp;
@@ -115,7 +122,13 @@ public class Scanner implements Closeable {
 
     public int read() throws IOException {
         checkScannerState();
-        return getChar();
+        int tmp = getChar();
+        truePos = pos;
+        return tmp;
+    }
+
+    private boolean curValueOccupied() {
+        return truePos != pos;
     }
 
     private void checkScannerState() {
@@ -132,6 +145,7 @@ public class Scanner implements Closeable {
         if (chr != -1) {
             pos--;
         }
+        truePos = pos;
     }
 
     private boolean parseLine() throws IOException {
