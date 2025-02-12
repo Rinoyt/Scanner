@@ -63,15 +63,18 @@ public class Scanner implements Closeable {
 
     @Override
     public void close() throws IOException {
+        checkScannerState();
         closed = true;
         in.close();
     }
 
     public boolean hasNextLine() throws IOException {
+        checkScannerState();
         return parseLine();
     }
 
     public String nextLine() throws IOException {
+        checkScannerState();
         if (!hasNextLine()) {
             throw new NoSuchElementException("EOF reached");
         }
@@ -81,10 +84,12 @@ public class Scanner implements Closeable {
     }
 
     public boolean hasNextWord() throws IOException {
+        checkScannerState();
         return parseWord();
     }
 
     public String nextWord() throws IOException {
+        checkScannerState();
         if (!hasNextWord()) {
             throw new NoSuchElementException("No words were found");
         }
@@ -94,10 +99,12 @@ public class Scanner implements Closeable {
     }
 
     public boolean hasNextInt() throws IOException {
+        checkScannerState();
         return parseInt();
     }
 
     public int nextInt() throws IOException {
+        checkScannerState();
         if (!hasNextInt()) {
             throw new NoSuchElementException("No numbers were found");
         }
@@ -107,6 +114,7 @@ public class Scanner implements Closeable {
     }
 
     public int read() throws IOException {
+        checkScannerState();
         return getChar();
     }
 
