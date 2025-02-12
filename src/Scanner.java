@@ -136,15 +136,15 @@ public class Scanner implements Closeable {
     }
 
     private int getChar() throws IOException {
-        if (pos == curLine.length()) {
-            pos++;
-            return '\n';
-        } else if (pos < curWord.length()) {
-            return curWord.charAt(pos++);
-        } else {
+        if (curLine == null || pos > curLine.length()) {
             curLine = null;
             pos = 0;
             return parseLine() ? getChar() : -1;
+        }else if (pos == curLine.length()) {
+            pos++;
+            return '\n';
+        } else {
+            return curLine.charAt(pos++);
         }
     }
 
