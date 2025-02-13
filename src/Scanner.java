@@ -26,10 +26,10 @@ public class Scanner implements Closeable {
     }
 
     public Scanner(InputStream inputStream, String charsetName) throws IllegalArgumentException {
-        try {
-            in = new BufferedReader(new InputStreamReader(inputStream, charsetName));
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("Scanner construct received unsupported charset name", e);
+        if (Charset.isSupported(charsetName)) {
+            in = new BufferedReader(new InputStreamReader(inputStream, Charset.forName(charsetName)));
+        } else {
+            throw new IllegalArgumentException("Scanner construct received unsupported charset name");
         }
     }
 
@@ -38,19 +38,15 @@ public class Scanner implements Closeable {
     }
 
     public Scanner(File file) throws FileNotFoundException {
-        in = new BufferedReader(new FileReader(file));
+        this(new FileInputStream(file));
     }
 
     public Scanner(File file, String charsetName) throws FileNotFoundException {
-        try {
-            in = new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName));
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("Scanner construct received unsupported charset name", e);
-        }
+        this(new FileInputStream(file), charsetName);
     }
 
     public Scanner(File file, Charset charset) throws FileNotFoundException {
-        in = new BufferedReader(new InputStreamReader(new FileInputStream(file), charset));
+        this(new FileInputStream(file), charset);
     }
 
     public Scanner(Path path) throws FileNotFoundException {
