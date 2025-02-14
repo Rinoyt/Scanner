@@ -163,12 +163,6 @@ public class Scanner implements Closeable {
         }
     }
 
-    private void returnChar() {
-        if (pos > 0) {
-            pos--;
-        }
-    }
-
     private boolean parseWord() throws IOException {
         if (curWord != null) {
             return true;
@@ -184,7 +178,6 @@ public class Scanner implements Closeable {
         while ((chr = getChar()) != -1 && !Character.isWhitespace(chr)) {
             word.append((char) chr);
         }
-        returnChar(); // current parser takes 1 extra char
 
         String res = word.toString();
         if (!res.isEmpty()) {
@@ -206,29 +199,26 @@ public class Scanner implements Closeable {
         skipSpace();
         int startPos = pos;
 
+        StringBuilder number = new StringBuilder();
         int chr = getChar();
 
         // check for negative numbers
-        int mult = 1;
         if ((char) chr == '-') {
-            mult = -1;
+            number.append('-');
             chr = getChar();
         }
-
-        StringBuilder number = new StringBuilder();
         while (chr != -1 && Character.isDigit(chr)) {
             number.append(Character.toString(chr));
             chr = getChar();
         }
-        returnChar(); // current parser takes 1 extra char
-
         String res = number.toString();
-        if (!res.isEmpty()) {
-            curInt = mult * Integer.parseInt(res);
-            return true;
-        } else {
+
+        if (!Character.isWhitespace(chr) && chr != -1 || res.isEmpty()) {
             pos = startPos;
             return false;
+        } else {
+            curInt = Integer.parseInt(res);
+            return true;
         }
     }
 }
