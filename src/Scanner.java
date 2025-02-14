@@ -1,10 +1,7 @@
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 public class Scanner implements Closeable {
     private final BufferedReader in;
@@ -175,16 +172,17 @@ public class Scanner implements Closeable {
     private boolean parseWord() throws IOException {
         if (curWord != null) {
             return true;
+        } else if (curValueOccupied()) {
+            return false;
         }
 
         skipSpace();
         int startPos = pos;
 
-        int chr = getChar();
+        int chr;
         StringBuilder word = new StringBuilder();
-        while (chr != -1 && !Character.isWhitespace(chr)) {
+        while ((chr = getChar()) != -1 && !Character.isWhitespace(chr)) {
             word.append((char) chr);
-            chr = getChar();
         }
         returnChar(); // current parser takes 1 extra char
 
@@ -201,6 +199,8 @@ public class Scanner implements Closeable {
     private boolean parseInt() throws IOException {
         if (curInt != null) {
             return true;
+        } else if (curValueOccupied()) {
+            return false;
         }
 
         skipSpace();
